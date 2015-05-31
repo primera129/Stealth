@@ -1,0 +1,1105 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+-- Started on 2015-05-27 20:23:06 IST
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+--
+-- Roles
+--
+
+CREATE ROLE maverick;
+ALTER ROLE maverick WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN NOREPLICATION PASSWORD 'md5985aecae8ec27bcfcf2d3002c108ea56';
+CREATE ROLE postgres;
+ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION;
+
+
+
+
+
+
+--
+-- Database creation
+--
+
+CREATE DATABASE poc WITH TEMPLATE = template0 OWNER = maverick;
+REVOKE ALL ON DATABASE template1 FROM PUBLIC;
+REVOKE ALL ON DATABASE template1 FROM postgres;
+GRANT ALL ON DATABASE template1 TO postgres;
+GRANT CONNECT ON DATABASE template1 TO PUBLIC;
+
+
+\connect poc
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.7
+-- Dumped by pg_dump version 9.3.4
+-- Started on 2015-05-27 20:23:06 IST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 188 (class 3079 OID 11787)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2105 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 187 (class 1259 OID 24649)
+-- Name: Address; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Address" (
+    "Address_ID" integer NOT NULL,
+    "Alt_Address_ID" integer,
+    "Street1" text,
+    "Street2" text,
+    "City" text,
+    "State" text,
+    "Zip" text,
+    "Country" text,
+    "Latitude" double precision,
+    "Longitude" double precision,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Address" OWNER TO maverick;
+
+--
+-- TOC entry 172 (class 1259 OID 24576)
+-- Name: AuthProvider; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "AuthProvider" (
+    "AuthProvider_ID" integer NOT NULL,
+    "Customer_ID" integer,
+    "Auth_ID" text,
+    "Auth_Token" text
+);
+
+
+ALTER TABLE public."AuthProvider" OWNER TO maverick;
+
+--
+-- TOC entry 178 (class 1259 OID 24606)
+-- Name: Businesses; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Businesses" (
+    "Business_ID" integer NOT NULL,
+    "Business_Name" text,
+    "Status" boolean,
+    "Description" text,
+    "Category" text,
+    "YELP_ID" text,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Businesses" OWNER TO maverick;
+
+--
+-- TOC entry 174 (class 1259 OID 24588)
+-- Name: Customer_Profile; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Customer_Profile" (
+    "Profile_ID" integer NOT NULL,
+    "Customer_ID" integer,
+    "Push_Notification" boolean,
+    "Email_Notification" boolean,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Customer_Profile" OWNER TO maverick;
+
+--
+-- TOC entry 173 (class 1259 OID 24582)
+-- Name: Customers; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Customers" (
+    "Customer_ID" integer NOT NULL,
+    "First_Name" text,
+    "Last_Name" text,
+    "Email" text,
+    "Status" boolean,
+    "JSON_TOKEN_ID" text,
+    "Username" text,
+    "Password" text,
+    "Created_On" date,
+    "Updated_On" date
+);
+
+
+ALTER TABLE public."Customers" OWNER TO maverick;
+
+--
+-- TOC entry 186 (class 1259 OID 24642)
+-- Name: Discounts; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Discounts" (
+    "Discount_ID" integer NOT NULL,
+    "SKU_ID" integer,
+    "Status" boolean,
+    "Description" text,
+    "Quantity" integer,
+    "Start_Time" timestamp with time zone,
+    "End_Time" timestamp with time zone,
+    "Fine_Print" text,
+    "Discount_Price" double precision,
+    "Discount_Percent" double precision,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Discounts" OWNER TO maverick;
+
+--
+-- TOC entry 175 (class 1259 OID 24591)
+-- Name: Entity_Address; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Entity_Address" (
+    "Entity_ID" integer,
+    "Entity_Type" integer,
+    "Address_ID" integer,
+    "Address_Type" text,
+    "Start_Date" date,
+    "End_Date" date,
+    "Status" boolean
+);
+
+
+ALTER TABLE public."Entity_Address" OWNER TO maverick;
+
+--
+-- TOC entry 182 (class 1259 OID 24624)
+-- Name: Entity_Keywords; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Entity_Keywords" (
+    "Keyword_ID" integer,
+    "Entity_ID" integer,
+    "Entity_Type" integer,
+    "Status" boolean
+);
+
+
+ALTER TABLE public."Entity_Keywords" OWNER TO maverick;
+
+--
+-- TOC entry 181 (class 1259 OID 24618)
+-- Name: Keywords; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Keywords" (
+    "Keyword_ID" integer,
+    "Keyword" character varying,
+    "Status" boolean,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Keywords" OWNER TO maverick;
+
+--
+-- TOC entry 180 (class 1259 OID 24615)
+-- Name: Order_Details; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Order_Details" (
+    "Order_ID" integer,
+    "SKU_ID" integer,
+    "Discount_ID" integer,
+    "Quantity" integer,
+    "Total_Cost" double precision,
+    "Code" bigint,
+    "Status" boolean
+);
+
+
+ALTER TABLE public."Order_Details" OWNER TO maverick;
+
+--
+-- TOC entry 179 (class 1259 OID 24612)
+-- Name: Orders; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Orders" (
+    "Order_ID" integer NOT NULL,
+    "Customer_ID" integer,
+    "Business_ID" integer,
+    "Status" boolean,
+    "Created_On" date,
+    "Updated_On" date
+);
+
+
+ALTER TABLE public."Orders" OWNER TO maverick;
+
+--
+-- TOC entry 183 (class 1259 OID 24627)
+-- Name: Products; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Products" (
+    "Product_ID" integer NOT NULL,
+    "Business_ID" integer,
+    "SKU_ID" integer,
+    "Status" boolean,
+    "Description" text,
+    "Original_Price" double precision,
+    "Image" text,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Products" OWNER TO maverick;
+
+--
+-- TOC entry 176 (class 1259 OID 24597)
+-- Name: Review_Detail; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Review_Detail" (
+    "Review_ID" integer,
+    "Business_ID" integer,
+    "Customer_ID" integer,
+    "Order_ID" integer
+);
+
+
+ALTER TABLE public."Review_Detail" OWNER TO maverick;
+
+--
+-- TOC entry 177 (class 1259 OID 24600)
+-- Name: Reviews; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "Reviews" (
+    "Review_ID" integer,
+    "Review" character varying,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."Reviews" OWNER TO maverick;
+
+--
+-- TOC entry 184 (class 1259 OID 24633)
+-- Name: SKU_Product; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "SKU_Product" (
+    "SKU_ID" integer,
+    "Product_ID" integer
+);
+
+
+ALTER TABLE public."SKU_Product" OWNER TO maverick;
+
+--
+-- TOC entry 185 (class 1259 OID 24636)
+-- Name: SKUs; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE "SKUs" (
+    "SKU_ID" integer NOT NULL,
+    "Description" text,
+    "Status" boolean,
+    "Original_Price" double precision,
+    "Image" text,
+    "Created_On" date,
+    "Updated_On" date,
+    "Created_By" integer,
+    "Updated_By" integer
+);
+
+
+ALTER TABLE public."SKUs" OWNER TO maverick;
+
+--
+-- TOC entry 171 (class 1259 OID 16396)
+-- Name: users; Type: TABLE; Schema: public; Owner: maverick; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    username character varying(20) NOT NULL,
+    email character varying(30) NOT NULL,
+    password character varying(20) NOT NULL,
+    name character varying(20) NOT NULL,
+    jwi character varying(300)
+);
+
+
+ALTER TABLE public.users OWNER TO maverick;
+
+--
+-- TOC entry 170 (class 1259 OID 16394)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: maverick
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO maverick;
+
+--
+-- TOC entry 2106 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: maverick
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- TOC entry 1933 (class 2604 OID 16399)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- TOC entry 2097 (class 0 OID 24649)
+-- Dependencies: 187
+-- Data for Name: Address; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Address" ("Address_ID", "Alt_Address_ID", "Street1", "Street2", "City", "State", "Zip", "Country", "Latitude", "Longitude", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2082 (class 0 OID 24576)
+-- Dependencies: 172
+-- Data for Name: AuthProvider; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "AuthProvider" ("AuthProvider_ID", "Customer_ID", "Auth_ID", "Auth_Token") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2088 (class 0 OID 24606)
+-- Dependencies: 178
+-- Data for Name: Businesses; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Businesses" ("Business_ID", "Business_Name", "Status", "Description", "Category", "YELP_ID", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2084 (class 0 OID 24588)
+-- Dependencies: 174
+-- Data for Name: Customer_Profile; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Customer_Profile" ("Profile_ID", "Customer_ID", "Push_Notification", "Email_Notification", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2083 (class 0 OID 24582)
+-- Dependencies: 173
+-- Data for Name: Customers; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Customers" ("Customer_ID", "First_Name", "Last_Name", "Email", "Status", "JSON_TOKEN_ID", "Username", "Password", "Created_On", "Updated_On") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2096 (class 0 OID 24642)
+-- Dependencies: 186
+-- Data for Name: Discounts; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Discounts" ("Discount_ID", "SKU_ID", "Status", "Description", "Quantity", "Start_Time", "End_Time", "Fine_Print", "Discount_Price", "Discount_Percent", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2085 (class 0 OID 24591)
+-- Dependencies: 175
+-- Data for Name: Entity_Address; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Entity_Address" ("Entity_ID", "Entity_Type", "Address_ID", "Address_Type", "Start_Date", "End_Date", "Status") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2092 (class 0 OID 24624)
+-- Dependencies: 182
+-- Data for Name: Entity_Keywords; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Entity_Keywords" ("Keyword_ID", "Entity_ID", "Entity_Type", "Status") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2091 (class 0 OID 24618)
+-- Dependencies: 181
+-- Data for Name: Keywords; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Keywords" ("Keyword_ID", "Keyword", "Status", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2090 (class 0 OID 24615)
+-- Dependencies: 180
+-- Data for Name: Order_Details; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Order_Details" ("Order_ID", "SKU_ID", "Discount_ID", "Quantity", "Total_Cost", "Code", "Status") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2089 (class 0 OID 24612)
+-- Dependencies: 179
+-- Data for Name: Orders; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Orders" ("Order_ID", "Customer_ID", "Business_ID", "Status", "Created_On", "Updated_On") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2093 (class 0 OID 24627)
+-- Dependencies: 183
+-- Data for Name: Products; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Products" ("Product_ID", "Business_ID", "SKU_ID", "Status", "Description", "Original_Price", "Image", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2086 (class 0 OID 24597)
+-- Dependencies: 176
+-- Data for Name: Review_Detail; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Review_Detail" ("Review_ID", "Business_ID", "Customer_ID", "Order_ID") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2087 (class 0 OID 24600)
+-- Dependencies: 177
+-- Data for Name: Reviews; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "Reviews" ("Review_ID", "Review", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2094 (class 0 OID 24633)
+-- Dependencies: 184
+-- Data for Name: SKU_Product; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "SKU_Product" ("SKU_ID", "Product_ID") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2095 (class 0 OID 24636)
+-- Dependencies: 185
+-- Data for Name: SKUs; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY "SKUs" ("SKU_ID", "Description", "Status", "Original_Price", "Image", "Created_On", "Updated_On", "Created_By", "Updated_By") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2081 (class 0 OID 16396)
+-- Dependencies: 171
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: maverick
+--
+
+COPY users (id, username, email, password, name, jwi) FROM stdin;
+8	ping	email_id	password	arnav	
+9	deepak	deepak@20deg.com	magic	arnav	
+10	alpha	email_id	test	testuser	
+11	deepakvcd	deepakvcd@yahoo.com	password	Deepak	
+12	daddu	sumeetdaddu@yahoo.com	password	sumeet	
+13	maverick	emailarnav@yahoo.in	password	arnav	
+\.
+
+
+--
+-- TOC entry 2107 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maverick
+--
+
+SELECT pg_catalog.setval('users_id_seq', 13, true);
+
+
+--
+-- TOC entry 1953 (class 2606 OID 24692)
+-- Name: Address_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Address"
+    ADD CONSTRAINT "Address_pkey" PRIMARY KEY ("Address_ID");
+
+
+--
+-- TOC entry 1951 (class 2606 OID 24737)
+-- Name: Discounts_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Discounts"
+    ADD CONSTRAINT "Discounts_pkey" PRIMARY KEY ("Discount_ID");
+
+
+--
+-- TOC entry 1945 (class 2606 OID 24716)
+-- Name: Orders_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Orders"
+    ADD CONSTRAINT "Orders_pkey" PRIMARY KEY ("Order_ID");
+
+
+--
+-- TOC entry 1937 (class 2606 OID 24685)
+-- Name: auth_prov_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "AuthProvider"
+    ADD CONSTRAINT auth_prov_pkey PRIMARY KEY ("AuthProvider_ID");
+
+
+--
+-- TOC entry 1943 (class 2606 OID 24704)
+-- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Businesses"
+    ADD CONSTRAINT businesses_pkey PRIMARY KEY ("Business_ID");
+
+
+--
+-- TOC entry 1939 (class 2606 OID 24656)
+-- Name: cust_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Customers"
+    ADD CONSTRAINT cust_pkey PRIMARY KEY ("Customer_ID");
+
+
+--
+-- TOC entry 1941 (class 2606 OID 24658)
+-- Name: cust_prof_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Customer_Profile"
+    ADD CONSTRAINT cust_prof_pkey PRIMARY KEY ("Profile_ID");
+
+
+--
+-- TOC entry 1947 (class 2606 OID 24751)
+-- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "Products"
+    ADD CONSTRAINT products_pkey PRIMARY KEY ("Product_ID");
+
+
+--
+-- TOC entry 1949 (class 2606 OID 24749)
+-- Name: sku_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY "SKUs"
+    ADD CONSTRAINT sku_pkey PRIMARY KEY ("SKU_ID");
+
+
+--
+-- TOC entry 1935 (class 2606 OID 16401)
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: maverick; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1971 (class 2606 OID 24693)
+-- Name: address_crea_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Address"
+    ADD CONSTRAINT address_crea_for_key FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1972 (class 2606 OID 24698)
+-- Name: address_upda_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Address"
+    ADD CONSTRAINT address_upda_for_key FOREIGN KEY ("Updated_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1954 (class 2606 OID 24686)
+-- Name: auth_prov_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "AuthProvider"
+    ADD CONSTRAINT auth_prov_for_key FOREIGN KEY ("Customer_ID") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1958 (class 2606 OID 24705)
+-- Name: businesses_crea_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Businesses"
+    ADD CONSTRAINT businesses_crea_for_key FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1959 (class 2606 OID 24710)
+-- Name: businesses_upda_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Businesses"
+    ADD CONSTRAINT businesses_upda_for_key FOREIGN KEY ("Updated_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1956 (class 2606 OID 24674)
+-- Name: cust_prof_crea_fkey; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Customer_Profile"
+    ADD CONSTRAINT cust_prof_crea_fkey FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1957 (class 2606 OID 24679)
+-- Name: cust_prof_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Customer_Profile"
+    ADD CONSTRAINT cust_prof_for_key FOREIGN KEY ("Customer_ID") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1955 (class 2606 OID 24669)
+-- Name: cust_prof_upda_fkey; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Customer_Profile"
+    ADD CONSTRAINT cust_prof_upda_fkey FOREIGN KEY ("Updated_By") REFERENCES users(id);
+
+
+--
+-- TOC entry 1969 (class 2606 OID 24738)
+-- Name: discounts_crea_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Discounts"
+    ADD CONSTRAINT discounts_crea_for_key FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1970 (class 2606 OID 24743)
+-- Name: discounts_upda_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Discounts"
+    ADD CONSTRAINT discounts_upda_for_key FOREIGN KEY ("Updated_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1962 (class 2606 OID 24752)
+-- Name: order_sku_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Order_Details"
+    ADD CONSTRAINT order_sku_for_key FOREIGN KEY ("SKU_ID") REFERENCES "SKUs"("SKU_ID");
+
+
+--
+-- TOC entry 1961 (class 2606 OID 24722)
+-- Name: orders_business_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Orders"
+    ADD CONSTRAINT orders_business_for_key FOREIGN KEY ("Business_ID") REFERENCES "Businesses"("Business_ID");
+
+
+--
+-- TOC entry 1960 (class 2606 OID 24717)
+-- Name: orders_cust_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Orders"
+    ADD CONSTRAINT orders_cust_for_key FOREIGN KEY ("Customer_ID") REFERENCES "Customers"("Customer_ID") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 1965 (class 2606 OID 24777)
+-- Name: product_crea_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Products"
+    ADD CONSTRAINT product_crea_for_key FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1963 (class 2606 OID 24767)
+-- Name: products_business_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Products"
+    ADD CONSTRAINT products_business_for_key FOREIGN KEY ("Business_ID") REFERENCES "Businesses"("Business_ID");
+
+
+--
+-- TOC entry 1964 (class 2606 OID 24772)
+-- Name: products_sku_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Products"
+    ADD CONSTRAINT products_sku_for_key FOREIGN KEY ("SKU_ID") REFERENCES "SKUs"("SKU_ID");
+
+
+--
+-- TOC entry 1966 (class 2606 OID 24782)
+-- Name: products_upda_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "Products"
+    ADD CONSTRAINT products_upda_for_key FOREIGN KEY ("Updated_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1967 (class 2606 OID 24757)
+-- Name: sku_crea_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "SKUs"
+    ADD CONSTRAINT sku_crea_for_key FOREIGN KEY ("Created_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 1968 (class 2606 OID 24762)
+-- Name: sku_upda_for_key; Type: FK CONSTRAINT; Schema: public; Owner: maverick
+--
+
+ALTER TABLE ONLY "SKUs"
+    ADD CONSTRAINT sku_upda_for_key FOREIGN KEY ("Updated_By") REFERENCES "Customers"("Customer_ID");
+
+
+--
+-- TOC entry 2104 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-05-27 20:23:06 IST
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect postgres
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.7
+-- Dumped by pg_dump version 9.3.4
+-- Started on 2015-05-27 20:23:06 IST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 1976 (class 1262 OID 12066)
+-- Dependencies: 1975
+-- Name: postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- TOC entry 172 (class 3079 OID 11787)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1979 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 171 (class 1259 OID 16388)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    username character varying(20) NOT NULL,
+    email character varying(30) NOT NULL,
+    password character varying(20) NOT NULL,
+    name character varying(20) NOT NULL,
+    jwi character varying(300)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 170 (class 1259 OID 16386)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 1980 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- TOC entry 1859 (class 2604 OID 16391)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- TOC entry 1970 (class 0 OID 16388)
+-- Dependencies: 171
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (id, username, email, password, name, jwi) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1981 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('users_id_seq', 1, false);
+
+
+--
+-- TOC entry 1861 (class 2606 OID 16393)
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1978 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-05-27 20:23:07 IST
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect template1
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.7
+-- Dumped by pg_dump version 9.3.4
+-- Started on 2015-05-27 20:23:07 IST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 1965 (class 1262 OID 1)
+-- Dependencies: 1964
+-- Name: template1; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE template1 IS 'default template for new databases';
+
+
+--
+-- TOC entry 170 (class 3079 OID 11787)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1968 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- TOC entry 1967 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-05-27 20:23:08 IST
+
+--
+-- PostgreSQL database dump complete
+--
+
+-- Completed on 2015-05-27 20:23:08 IST
+
+--
+-- PostgreSQL database cluster dump complete
+--
+
